@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../src/pages/index";
 import Login from "../src/pages/auth/login";
 import AboutUs from "../src/pages/about-us";
-import Signup from '../src/pages/auth/signUp'
+import Signup from "../src/pages/auth/signUp";
 import ForgotPassword from "../src/pages/auth/forgot-password";
 import ContactUs from "../src/pages/contact-us";
 import Account from "../src/pages/account/index";
@@ -11,10 +11,10 @@ import PlaceOrder from "../src/pages/account/place-order";
 import Cart from "../src/pages/account/my-cart";
 import Order from "../src/pages/account/[orderId]";
 import AddProduct from "@/pages/admin/add-product";
-import Admin from "@/pages/admin";
-import ViewOrders from "@/pages/admin/view-orders/index";
-import ViewRequests from "@/pages/admin/view-requests/index";
-import ViewProducts from "@/pages/admin/view-products/index";
+import Admin from "../src/pages/admin/index";
+import ViewOrders from "../src/pages/admin/view-orders/index";
+import ViewRequests from "../src/pages/admin/view-requests/index";
+import ViewProducts from "../src/pages/admin/view-products/index";
 
 const Routes = () => {
   return (
