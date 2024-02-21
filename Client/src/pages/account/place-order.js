@@ -31,7 +31,9 @@ export default function PlaceOrder() {
     }
     return true;
   };
-
+  function numberWithCommas(x) {
+    return x.toLocaleString("en-IN");
+  }
   const numberHandler = (number) => {
     if (number > 9999999999 && number < 1000000000) {
       return false;
@@ -120,7 +122,7 @@ export default function PlaceOrder() {
                 <div className="flex justify-between">
                   {" "}
                   <p>Total Price : </p>
-                  <p>₹{total.totalPrice}</p>{" "}
+                  <p>₹{numberWithCommas(total.totalPrice)}</p>{" "}
                 </div>
               </div>
               <form className="col-span-2 mb-8" onSubmit={checkOutHandler}>

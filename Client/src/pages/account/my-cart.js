@@ -17,7 +17,9 @@ export default function Cart() {
   const router = useRouter();
   
   const [isModalOpen, setModalOpen] = useState(false);
-
+  function numberWithCommas(x) {
+    return x.toLocaleString("en-IN");
+  }
   const openModal = () => {
     setModalOpen(true);
   };
@@ -119,7 +121,7 @@ export default function Cart() {
                         {product.quantity}
                       </td>
                       <td className="px-6 py-4 dark:text-white">
-                        ₹{product.productId.productPrice}
+                        ₹{numberWithCommas(product.productId.productPrice)}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button

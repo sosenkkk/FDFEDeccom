@@ -115,7 +115,7 @@ export default function Order() {
                             </div>
                             <div className="flex justify-between space-x-8 items-start w-full">
                               <p className="text-base dark:text-gray-300 xl:text-lg leading-6">
-                                ${product.product.productPrice}{" "}
+                               ₹{product.product.productPrice}{" "}
                                 <span className="text-red-300 line-through">
                                   {" "}
                                   {/* $45.00 */}
@@ -125,7 +125,7 @@ export default function Order() {
                                 {product.quantity}
                               </p>
                               <p className="text-base dark:text-gray-300 xl:text-lg font-semibold leading-6 text-gray-800">
-                                $
+                              ₹
                                 {product.product.productPrice *
                                   product.quantity}
                               </p>
@@ -146,7 +146,7 @@ export default function Order() {
                             Sub-Total
                           </p>
                           <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                            ${total.totalPrice}
+                          ₹{total.totalPrice}
                           </p>
                         </div>
                         {/* <div className="flex justify-between items-center w-full">
@@ -174,7 +174,7 @@ export default function Order() {
                           Total
                         </p>
                         <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                          ${total.totalPrice}
+                        ₹{total.totalPrice}
                         </p>
                       </div>
                     </div>
