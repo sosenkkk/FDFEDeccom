@@ -257,6 +257,7 @@ exports.postCheckOut = async (req, res, next) => {
       total: total,
       user: user,
     });
+    // also have to reduce quantity from the product document
     const postOrder = await order.save();
     const userCart = await User.findOne({ _id: userId });
     await userCart.clearCart();

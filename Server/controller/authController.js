@@ -15,8 +15,7 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.signup = async (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password, userType, pickupAddress } = req.body;
   try {
     const enteredUser = await User.findOne({ email: email });
     if (enteredUser) {
@@ -30,6 +29,12 @@ exports.signup = async (req, res, next) => {
         password: hashedPassword,
       });
       const result = await user.save();
+      if (userType === "SELLER") {
+        const sellerObj = {
+          userId: result._id,
+          pickupAddress,
+        };
+      }
       res
         .status(201)
         .json({ message: "User account created!", userId: result._id });
@@ -60,7 +65,12 @@ exports.login = async (req, res, next) => {
           { expiresIn: "1h" }
         );
 
-        res.cookie("jwt", token, { maxAge: 1000 * 60 * 60, httpOnly: true, sameSite:"none", secure:true  });
+        res.cookie("jwt", token, {
+          maxAge: 1000 * 60 * 60,
+          httpOnly: true,
+          sameSite: "none",
+          secure: true,
+        });
 
         res.status(201).json({
           message: "User logged In",
