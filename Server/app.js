@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const csrfRoutes = require("./middleware/csrfMiddleWare")
 
 const path = require("path");
 const MONGO_URI =
@@ -30,6 +31,7 @@ app.use(bodyParser.json());
 // Use Morgan for logging requests
 app.use(morgan("dev"));
 
+
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -38,11 +40,14 @@ app.use(
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
+app.use("/csrf", csrfRoutes)
+
 app.use(authRoutes);
 
 app.use(adminRoutes);
 
 app.use(userRoutes);
+
 
 app.use((error, req, res, next) => {
   console.log(error);
