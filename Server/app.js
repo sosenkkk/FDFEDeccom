@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const mongoose = require("mongoose");
+const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
@@ -26,6 +27,8 @@ app.use(
 
 app.use(cookieParser());
 app.use(bodyParser.json());
+// Use Morgan for logging requests
+app.use(morgan("dev"));
 
 app.use(
   fileUpload({
