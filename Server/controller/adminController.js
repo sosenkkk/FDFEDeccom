@@ -138,6 +138,17 @@ exports.postDeleteRequest = async (req, res, next) => {
   }
 };
 
+exports.postDeleteUser = async (req, res, next) => {
+  try {
+    const id = req.params.reqId;
+    const itemDeleted = await User.deleteOne({ _id: id });
+    res.status(201).json({ message: "User Deleted Successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(433).json({ message: "Failed Deleting User" });
+  }
+};
+
 exports.getRequests = async (req, res, next) => {
   let currentPage = req.query.page || 1;
   let sort;
@@ -157,6 +168,37 @@ exports.getRequests = async (req, res, next) => {
     } else {
       requests = await Contacts.find()
         .populate("user")
+        .skip((currentPage - 1) * limit)
+        .limit(limit);
+    }
+    res.status(201).json({
+      message: "Successfully fetched Requests!",
+      requests: requests,
+      totalRequests: totalRequests,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: "Requests failed to load!" });
+  }
+};
+
+exports.getUsers = async (req, res, next) => {
+  let currentPage = req.query.page || 1;
+  let sort;
+  if (req.query.sort && req.query.sort != "") {
+    sort = req.query.sort;
+  }
+  try {
+    const limit = 5;
+    let requests, totalRequests;
+    totalRequests = await User.find().countDocuments();
+    if (sort) {
+      requests = await User.find()
+        .skip((currentPage - 1) * limit)
+        .limit(limit)
+        .sort({ createdAt: sort });
+    } else {
+      requests = await User.find()
         .skip((currentPage - 1) * limit)
         .limit(limit);
     }

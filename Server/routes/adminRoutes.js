@@ -7,6 +7,8 @@ const upload = require("../middleware/multerMiddleware");
 
 router.get('/view-requests', isAuth, isAdmin, adminController.getRequests )
 
+router.get('/view-all-users', isAuth, isAdmin, adminController.getUsers )
+
 router.get('/view-orders', isAuth, isAdmin, adminController.getOrders )
 
 router.get('/view-products', isAuth, isAdmin, adminController.getAllProducts )
@@ -24,6 +26,8 @@ router.post("/get-edit-product/:prodId", isAuth, isAdmin, adminController.postEd
 router.get("/delete-product/:prodId", isAuth, isAdmin, adminController.postDeleteProduct);
 
 router.get("/delete-request/:reqId", isAuth, isAdmin, adminController.postDeleteRequest);
+
+router.get("/delete-user/:reqId", isAuth, isAdmin, adminController.postDeleteUser);
 
 router.post("/add-product", isAuth, isAdmin,  adminController.addProduct);
 

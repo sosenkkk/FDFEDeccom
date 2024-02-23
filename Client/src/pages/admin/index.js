@@ -58,7 +58,11 @@ export default function Admin(props) {
               link="/admin/view-products"
               description="Edit/remove products."
             />
-           
+             <AccountCard
+              title="View/Delete Users"
+              link="/admin/view/users"
+              description="View All accounts."
+            />
           </div>
         </div>
       </div>}
