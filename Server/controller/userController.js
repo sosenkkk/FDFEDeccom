@@ -38,6 +38,7 @@ exports.accountInfo = async (req, res, next) => {
         cart: userInfo.cart,
         profile: userInfo.profile,
         isAdmin: userInfo.isAdmin,
+        isSeller: userInfo.isSeller ? userInfo.isSeller : false
       });
     } else {
       res.status(404).json({ message: "Some Error Happened, User not found" });

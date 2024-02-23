@@ -3,6 +3,7 @@ const isAdmin = require("../middleware/adminMiddleware")
 const express = require("express");
 const adminController = require("../controller/adminController");
 const router = express.Router();
+const upload = require("../middleware/multerMiddleware");
 
 router.get('/view-requests', isAuth, isAdmin, adminController.getRequests )
 
@@ -24,7 +25,7 @@ router.get("/delete-product/:prodId", isAuth, isAdmin, adminController.postDelet
 
 router.get("/delete-request/:reqId", isAuth, isAdmin, adminController.postDeleteRequest);
 
-router.post("/add-product", isAuth, isAdmin, adminController.addProduct);
+router.post("/add-product", isAuth, isAdmin,  adminController.addProduct);
 
 router.get("/delete-request/:reqId",isAuth, adminController.deleteRequest)
 

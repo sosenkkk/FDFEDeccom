@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.signup = async (req, res, next) => {
-  const { email, password, userType, pickupAddress } = req.body;
+  const { email, password,  } = req.body;
   try {
     const enteredUser = await User.findOne({ email: email });
     if (enteredUser) {
@@ -29,12 +29,6 @@ exports.signup = async (req, res, next) => {
         password: hashedPassword,
       });
       const result = await user.save();
-      if (userType === "SELLER") {
-        const sellerObj = {
-          userId: result._id,
-          pickupAddress,
-        };
-      }
       res
         .status(201)
         .json({ message: "User account created!", userId: result._id });

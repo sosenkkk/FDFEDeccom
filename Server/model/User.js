@@ -12,6 +12,10 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isSeller:{
+    type: Boolean,
+    default: false,
+  },
   profile: {
     type: String,
     default:

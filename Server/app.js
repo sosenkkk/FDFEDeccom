@@ -8,11 +8,12 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const sellerRoutes = require("./routes/sellerRoutes");
 const csrfRoutes = require("./middleware/csrfMiddleWare");
 const morgan = require("morgan");
 const fs = require("fs");
 const path = require("path");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster1.wxdleee.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`;
 const app = express();
@@ -38,10 +39,9 @@ if (!fs.existsSync(logsDir)) {
 }
 
 const logFileName = `${uuidv4()}.log`;
-const accessLogStream = fs.createWriteStream(
-  path.join(logsDir, logFileName),
-  { flags: 'a' }
-);
+const accessLogStream = fs.createWriteStream(path.join(logsDir, logFileName), {
+  flags: "a",
+});
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -74,6 +74,8 @@ app.use(authRoutes);
 app.use(adminRoutes);
 
 app.use(userRoutes);
+
+app.use("/seller", sellerRoutes);
 
 app.use((error, req, res, next) => {
   console.log(error);

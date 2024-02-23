@@ -15,6 +15,7 @@ export default function NewNavbar() {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.isAuthenticated);
   const isAdmin = useSelector((state) => state.user.isAdmin);
+  const isSeller = useSelector((state) => state.user.isSeller);
   const logoutHandler = async () => {
     const result = await fetch(BASE_URL + "logout", {
       headers: {
@@ -115,6 +116,13 @@ export default function NewNavbar() {
             <div>
               <Link className="navlinkWhite dark:text-white" href="/admin">
                 Admin
+              </Link>
+            </div>
+          )}
+           {isAuth && isSeller && (
+            <div>
+              <Link className="navlinkWhite dark:text-white" href="/seller">
+                Seller
               </Link>
             </div>
           )}
@@ -234,6 +242,21 @@ export default function NewNavbar() {
               onClick={hiddenHandler}
             >
               Admin
+            </Link>
+          )}
+           {isAuth && isSeller && (
+            <Link
+              className="navlinkWhite dark:text-white"
+              href="/seller"
+              style={{
+                fontSize: "1.2rem",
+                paddingTop: "4px",
+                width: "100%",
+                marginBottom: "12px",
+              }}
+              onClick={hiddenHandler}
+            >
+              Seller
             </Link>
           )}
           {isAuth && (

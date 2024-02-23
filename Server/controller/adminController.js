@@ -12,6 +12,7 @@ cloudinary.config({
 });
 
 exports.addProduct = async (req, res, next) => {
+  console.log(req.file)
   const uploadedFile = req.files.image;
   const productModel = req.body.productModel;
   const productName = req.body.productName;

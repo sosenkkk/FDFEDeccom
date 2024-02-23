@@ -6,6 +6,7 @@ const initialState = {
   userCart: [],
   total:{},
   isAdmin:false,
+  isSeller:false
 };
 
 export const userInfoSlice = createSlice({
@@ -23,6 +24,9 @@ export const userInfoSlice = createSlice({
     },
     userIsAdmin(state, action){
       state.isAdmin= action.payload;
+    },
+    userIsSeller(state, action){
+      state.isSeller= action.payload;
     }
   },
 });
@@ -43,6 +47,8 @@ export const fetchUserData = (token) => {
     const data = await fetchData();
     const isAdmin = data.isAdmin;
     dispatch(userIsAdmin(isAdmin))
+    const isSeller = data.isSeller;
+    dispatch(userIsSeller(isSeller))
     const email = data.email;
     const firstName = data.firstName;
     const lastName = data.lastName;
@@ -72,6 +78,6 @@ export const fetchUserCart = (token) => {
 };
 
 
-export const { info, cart, total, userIsAdmin } = userInfoSlice.actions;
+export const { info, cart, total, userIsAdmin, userIsSeller } = userInfoSlice.actions;
 
 export default userInfoSlice.reducer;
