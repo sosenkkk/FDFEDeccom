@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  client:
+    build: ./Client
+    container_name: carbon_frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+  server:
+    build: ./Server 
+    container_name: carbon_backend
+    ports:
+      - "8080:8080"
+    stdin_open: true
+    tty: true
