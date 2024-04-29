@@ -8,6 +8,7 @@ const userSchema = new Schema({
   firstName: { type: String, default: "New" },
   lastName: { type: String, default: "User" },
   phoneNo: { type: Number },
+  isSeller: { type: Boolean, required: true, default: false },
   isAdmin: {
     type: Boolean,
     default: false,
@@ -36,7 +37,7 @@ userSchema.methods.addToCart = function (product, quantity) {
   let newQuantity = quantity;
   const updatedCartItems = [...this.cart];
   if (cartProductIndex >= 0) {
-    newQuantity = this.cart[cartProductIndex].quantity+newQuantity ;
+    newQuantity = this.cart[cartProductIndex].quantity + newQuantity;
     updatedCartItems[cartProductIndex].quantity = newQuantity;
   } else {
     updatedCartItems.push({
