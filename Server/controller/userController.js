@@ -109,7 +109,7 @@ exports.getProducts = async (req, res, next) => {
     sort = req.query.sort;
   }
   const limit = 8;
-  getOrSetCache(`products?currentPage=${currentPage}&sort=${sort}&filter=${filter}&limit=${limit}`, 3600, async () => {
+  getOrSetCache(`products?currentPage=${currentPage}&sort=${sort}&filter=${req.query.filter}&limit=${limit}`, 3600, async () => {
     try {
       const totalProducts = await Product.find(query).countDocuments();
       let products;
@@ -279,19 +279,17 @@ exports.getOrders = async (req, res, next) => {
   getOrSetCache(`orders?userId=${userId}`, 30, async () => {
     try {
       const orders = await Order.find({ "user.userId": userId });
-      if (orders.length > 0) {
-        const updatedOrders = orders.map((order) => {
-          return {
-            user: order.user,
-            total: order.total,
-            orderPlaced: order.createdAt.toLocaleDateString(),
-            id: order._id.toString(),
-          };
-        });
-
-      }
+      const updatedOrders = orders.map((order) => {
+        return {
+          user: order.user,
+          total: order.total,
+          orderPlaced: order.createdAt.toLocaleDateString(),
+          id: order._id.toString(),
+        };
+      });
       return updatedOrders;
     } catch (error) {
+      console.log(error)
       throw new Error("some error occured");
     }
   })

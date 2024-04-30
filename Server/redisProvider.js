@@ -6,7 +6,6 @@ const redisClient = new Redis();
 async function getOrSetCache(key, ex, cb) {
     return new Promise(async (resolve, reject) => {
         redisClient.get(key, async (error, data) => {
-            console.log("hello again!", data);
             // if (error) return reject(error)
             if (data != null) {
                 return resolve(JSON.parse(data)); //convert to json
