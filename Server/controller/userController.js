@@ -109,7 +109,7 @@ exports.getProducts = async (req, res, next) => {
     sort = req.query.sort;
   }
   const limit = 8;
-  getOrSetCache(`products?currentPage=${currentPage}&sort=${sort}&filter=${filter}&limit=${limit}`, 3600, async() => {
+  getOrSetCache(`products?currentPage=${currentPage}&sort=${sort}&filter=${filter}&limit=${limit}`, 3600, async () => {
     try {
       const totalProducts = await Product.find(query).countDocuments();
       let products;
@@ -124,158 +124,160 @@ exports.getProducts = async (req, res, next) => {
           .limit(limit);
       }
 
-      return {products, totalProducts};
+      return { products, totalProducts };
     } catch (err) {
       throw new Error("failed fetching");
     }
   })
-  .then((data) => {
-    res.status(201).json({
-      message: "Products fetched Successfully",
-      products: data.products,
-      totalProducts: data.totalProducts,
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  })
+    .then((data) => {
+      res.status(201).json({
+        message: "Products fetched Successfully",
+        products: data.products,
+        totalProducts: data.totalProducts,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    })
 }
 
 
-  exports.getSingleProduct = async (req, res, next) => {
-    const productId = req.params.productId;
-    try {
-      const product = await Product.findOne({ _id: productId });
-      res.status(201).json({
-        message: "Product fetched Successfully",
-        product: product,
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(433).json({ message: "Products fecthing failed" });
-    }
-  };
-
-  exports.getTotalProducts = async (req, res, next) => {
-    const totalProductModels = await Product.distinct("productModel");
+exports.getSingleProduct = async (req, res, next) => {
+  const productId = req.params.productId;
+  try {
+    const product = await Product.findOne({ _id: productId });
     res.status(201).json({
-      message: "Successfully fetched all product models",
-      totalProductModels: totalProductModels,
+      message: "Product fetched Successfully",
+      product: product,
     });
-  };
+  } catch (err) {
+    console.log(err);
+    res.status(433).json({ message: "Products fecthing failed" });
+  }
+};
 
-  exports.deleteFromCart = async (req, res, next) => {
-    try {
-      const cartId = req.params.cartId;
-      const userId = req.userId;
-      const user = await User.findOne({ _id: userId });
-      user.removeFromCart(cartId);
-      res.status(201).json({ message: "Item deleted from cart!" });
-    } catch (error) {
-      console.log(error);
-      res.status(433).json({ message: "Unable to update cart" });
-    }
-  };
+exports.getTotalProducts = async (req, res, next) => {
+  const totalProductModels = await Product.distinct("productModel");
+  res.status(201).json({
+    message: "Successfully fetched all product models",
+    totalProductModels: totalProductModels,
+  });
+};
 
-  exports.deleteCart = async (req, res, next) => {
-    try {
-      const userId = req.userId;
-      const user = await User.findOne({ _id: userId });
-      user.clearCart();
-      res.status(201).json({ message: "Cart Deleted!" });
-    } catch (error) {
-      console.log(error);
-      res.status(433).json({ message: "Unable to delete cart!" });
-    }
-  };
-  exports.contactUs = async (req, res, next) => {
-    try {
-      const message = req.body.message;
-      const userId = req.userId;
-      const newMessage = await new Message({
-        message: message,
-        user: userId,
-      });
-      const messageSave = await newMessage.save();
-      res.status(201).json({ message: "Message sent successfully." });
-    } catch (err) {
-      console.log(err);
-      res.status(433).json({ message: "Message not sent due to some error." });
-    }
-  };
-
-  exports.postCart = async (req, res, next) => {
-    const quantity = req.body.quantity || 1;
-    try {
-      const prodId = req.body.productId;
-      const userId = req.userId;
-      const product = await Product.findById(prodId);
-      const user = await User.findOne({ _id: userId });
-      const updateduser = await user.addToCart(product, quantity);
-      const updatedUserCart = await updateduser.populate("cart.productId");
-      const updatedCart = updatedUserCart.cart;
-      const total = getTotalCart(updatedCart);
-      res
-        .status(201)
-        .json({ message: "Added to cart", cart: updatedCart, total: total });
-    } catch (err) {
-      console.log(err);
-      res.status(433).json({ message: "Item not added to cart" });
-    }
-  };
-
-  exports.getCart = async (req, res, next) => {
+exports.deleteFromCart = async (req, res, next) => {
+  try {
+    const cartId = req.params.cartId;
     const userId = req.userId;
-    const user = await User.findOne({ _id: userId }).populate("cart.productId");
-    const products = user.cart;
-    const total = getTotalCart(products);
-    res.status(201).json({ products: products, total: total });
-  };
+    const user = await User.findOne({ _id: userId });
+    user.removeFromCart(cartId);
+    res.status(201).json({ message: "Item deleted from cart!" });
+  } catch (error) {
+    console.log(error);
+    res.status(433).json({ message: "Unable to update cart" });
+  }
+};
 
-  exports.postCheckOut = async (req, res, next) => {
-    try {
-      const products = req.body.products;
-      let extProducts = [];
-      products.forEach((p) => {
-        const productInfo = p.productId;
-        const productQuantity = p.quantity;
-        const prod = {
-          product: productInfo,
-          quantity: productQuantity,
-        };
-        extProducts.push(prod);
-      });
-      const total = req.body.total;
-      const userId = req.userId;
-      const user = {
-        userId: userId,
-        name: req.body.user.name,
-        shippingAddress: req.body.user.shippingAddress,
-        landmark: req.body.user.landmark,
-        state: req.body.user.state,
-        city: req.body.user.city,
-        pincode: req.body.user.pincode,
-        phoneNumber: req.body.user.phoneNumber,
+exports.deleteCart = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findOne({ _id: userId });
+    user.clearCart();
+    res.status(201).json({ message: "Cart Deleted!" });
+  } catch (error) {
+    console.log(error);
+    res.status(433).json({ message: "Unable to delete cart!" });
+  }
+};
+exports.contactUs = async (req, res, next) => {
+  try {
+    const message = req.body.message;
+    const userId = req.userId;
+    const newMessage = await new Message({
+      message: message,
+      user: userId,
+    });
+    const messageSave = await newMessage.save();
+    res.status(201).json({ message: "Message sent successfully." });
+  } catch (err) {
+    console.log(err);
+    res.status(433).json({ message: "Message not sent due to some error." });
+  }
+};
+
+exports.postCart = async (req, res, next) => {
+  const quantity = req.body.quantity || 1;
+  try {
+    const prodId = req.body.productId;
+    const userId = req.userId;
+    const product = await Product.findById(prodId);
+    const user = await User.findOne({ _id: userId });
+    const updateduser = await user.addToCart(product, quantity);
+    const updatedUserCart = await updateduser.populate("cart.productId");
+    const updatedCart = updatedUserCart.cart;
+    const total = getTotalCart(updatedCart);
+    res
+      .status(201)
+      .json({ message: "Added to cart", cart: updatedCart, total: total });
+  } catch (err) {
+    console.log(err);
+    res.status(433).json({ message: "Item not added to cart" });
+  }
+};
+
+exports.getCart = async (req, res, next) => {
+  const userId = req.userId;
+  const user = await User.findOne({ _id: userId }).populate("cart.productId");
+  const products = user.cart;
+  const total = getTotalCart(products);
+  res.status(201).json({ products: products, total: total });
+};
+
+exports.postCheckOut = async (req, res, next) => {
+  try {
+    const products = req.body.products;
+    let extProducts = [];
+    products.forEach((p) => {
+      const productInfo = p.productId;
+      const productQuantity = p.quantity;
+      const prod = {
+        product: productInfo,
+        quantity: productQuantity,
       };
-      const order = new Order({
-        products: extProducts,
-        total: total,
-        user: user,
-      });
-      // also have to reduce quantity from the product document
-      const postOrder = await order.save();
-      const userCart = await User.findOne({ _id: userId });
-      await userCart.clearCart();
-      res.status(201).json({ message: "Order successful." });
-    } catch (error) {
-      console.log(error);
-      res.status(433).json({ message: "Order unsuccessful." });
-    }
-  };
+      extProducts.push(prod);
+    });
+    const total = req.body.total;
+    const userId = req.userId;
+    const user = {
+      userId: userId,
+      name: req.body.user.name,
+      shippingAddress: req.body.user.shippingAddress,
+      landmark: req.body.user.landmark,
+      state: req.body.user.state,
+      city: req.body.user.city,
+      pincode: req.body.user.pincode,
+      phoneNumber: req.body.user.phoneNumber,
+    };
+    const order = new Order({
+      products: extProducts,
+      total: total,
+      user: user,
+    });
+    // also have to reduce quantity from the product document
+    const postOrder = await order.save();
+    const userCart = await User.findOne({ _id: userId });
+    await userCart.clearCart();
+    res.status(201).json({ message: "Order successful." });
+  } catch (error) {
+    console.log(error);
+    res.status(433).json({ message: "Order unsuccessful." });
+  }
+};
 
-  exports.getOrders = async (req, res, next) => {
+exports.getOrders = async (req, res, next) => {
+
+  const userId = req.userId;
+  getOrSetCache(`orders?userId=${userId}`, 30, async () => {
     try {
-      const userId = req.userId;
       const orders = await Order.find({ "user.userId": userId });
       if (orders.length > 0) {
         const updatedOrders = orders.map((order) => {
@@ -286,24 +288,29 @@ exports.getProducts = async (req, res, next) => {
             id: order._id.toString(),
           };
         });
-        res.status(201).json({
-          message: "Fetched Orders Successfully.",
-          orders: updatedOrders,
-        });
-      } else {
-        res.status(404).json({ message: "No orders found." });
-      }
-    } catch (error) {
-      console.log(error);
-      res.status(433).json({ message: "Some error occured" });
-    }
-  };
 
-  exports.getSingleOrder = async (req, res, next) => {
-    const orderId = req.params.orderId;
-    const order = await Order.findById(orderId).populate("user.userId");
-    console.log(order);
-    res
-      .status(201)
-      .json({ message: "Order fetched successfully.", order: order });
-  };
+      }
+      return updatedOrders;
+    } catch (error) {
+      throw new Error("some error occured");
+    }
+  })
+    .then((data) => {
+      res.status(201).json({
+        message: "Fetched Orders Successfully.",
+        orders: data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+};
+
+exports.getSingleOrder = async (req, res, next) => {
+  const orderId = req.params.orderId;
+  const order = await Order.findById(orderId).populate("user.userId");
+  console.log(order);
+  res
+    .status(201)
+    .json({ message: "Order fetched successfully.", order: order });
+};

@@ -7,13 +7,19 @@ async function getOrSetCache(key, ex, cb) {
     return new Promise(async (resolve, reject) => {
         redisClient.get(key, async (error, data) => {
             console.log("hello again!", data);
-            if (error) return reject(error)
+            // if (error) return reject(error)
             if (data != null) {
-                return resolve(JSON.parse(data));
+                return resolve(JSON.parse(data)); //convert to json
             }
-            const freshData = await cb();
-            redisClient.setex(key, ex, JSON.stringify(freshData));
-            resolve(freshData);
+            const freshData = await cb()
+                .then((freshData)=>{
+                    redisClient.setex(key, ex, JSON.stringify(freshData)); //convert to string
+                    resolve(freshData);
+                })
+                .catch((err)=>{
+                    reject(err);
+                })
+        
         })
     })
 };
