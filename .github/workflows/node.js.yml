@@ -37,6 +37,7 @@ jobs:
         json_secret: ${{ secrets.json_secret }}
       run: |
         npm install pm2 -g
+        npm install jest -g
         npm install
         pm2 start app.js
         sleep 20
