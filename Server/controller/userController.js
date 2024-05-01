@@ -94,6 +94,16 @@ exports.editInfo = async (req, res, next) => {
   }
 };
 
+exports.getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find();
+    
+    res.status(201).json({data: products});
+  }  catch (err) {
+    res.status(500).json({message: "something went wrong!"});
+  }
+}
+
 exports.getProducts = async (req, res, next) => {
   let currentPage = req.query.page || 1;
   const query = {};
@@ -128,17 +138,17 @@ exports.getProducts = async (req, res, next) => {
 
       let products;
       if (sort) {
-        // products = await Product.aggregate([{
-        //   $match: query
-        // }])
-        //   .sort({ productPrice: sort })
-        //   .skip((currentPage - 1) * limit)
-        //   .limit(limit);
+        products = await Product.aggregate([{
+          $match: query
+        }])
+          .sort({ productPrice: sort })
+          .skip((currentPage - 1) * limit)
+          .limit(limit);
 
         products = await Product.find(query)
-        .sort({ productPrice: sort })
-        .skip((currentPage - 1) * limit)
-        .limit(limit)
+        // .sort({ productPrice: sort })
+        // .skip((currentPage - 1) * limit)
+        // .limit(limit)
       } else {
         // products = await Product.aggregate([{
         //   $match: query
@@ -302,7 +312,6 @@ exports.postCheckOut = async (req, res, next) => {
 };
 
 exports.getOrders = async (req, res, next) => {
-
   const userId = req.userId;
   getOrSetCache(`orders?userId=${userId}`, 30, async () => {
     try {

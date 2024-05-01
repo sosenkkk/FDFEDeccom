@@ -12,15 +12,16 @@ const redisClient = createClient({
     await redisClient.connect();
 })();
 redisClient.on('connect', () => {
-    console.log('Redis client connected');
+    // console.log('Redis client connected');
 });
 
 redisClient.on('error', (err) => {
     console.error('Redis connection error:', err);
 });
 
+
 //helper function for redis 
-async function getOrSetCache(key, ex, cb) {
+const getOrSetCache = async (key, ex, cb) => {
     return new Promise(async (resolve, reject) => {
         redisClient.get(key)
         .then(

@@ -781,4 +781,6 @@ router.get("/my-order/:orderId", isAuth, userController.getSingleOrder);
 
 router.get("/delete/:cartId", isAuth, userController.deleteFromCart);
 
+router.get("/getAllproducts", userController.getAllProducts);
+
 module.exports = router;
