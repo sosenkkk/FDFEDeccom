@@ -17,6 +17,7 @@ const fs = require("fs");
 const path = require("path");
 
 const { v4: uuidv4 } = require("uuid");
+const Product = require("./model/Product");
 
 const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster1.wxdleee.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`;
 const app = express();
@@ -106,6 +107,22 @@ app.use(adminRoutes);
 app.use(userRoutes);
 
 app.use("/seller", sellerRoutes);
+
+app.get("/createProductModelIndex", async (req, res) => {
+  try {
+      const indexes = await Product.listIndexes();
+      console.log(indexes);
+
+      res.status(201).json({message: "index created successfully!"});
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({message: "something went wrong!"});
+  }
+});
+
+app.get("/dropProductModelIndex", (req, res) => {
+
+})
 
 app.use((error, req, res, next) => {
   console.log(error);
