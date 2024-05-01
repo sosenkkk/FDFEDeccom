@@ -59,6 +59,21 @@ app.use(
   )
 );
 
+// Check log file size and create a new file if exceeds 5MB
+app.use((req, res, next) => {
+  const fileSizeInBytes = fs.statSync(accessLogStream.path).size;
+  const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+  if (fileSizeInMB > 5) {
+    // Create a new access log stream
+    accessLogStream.end();
+    
+    accessLogStream = createAccessLogStream();
+  }
+
+  next();
+});
+
 app.use(
   fileUpload({
     useTempFiles: true,
