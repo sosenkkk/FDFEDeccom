@@ -38,8 +38,8 @@ jobs:
       run: |
         npm install pm2 -g
         npm install
-        pm2 start index.js
+        pm2 start app.js
         sleep 20
         npm test
-        pm2 stop index
+        pm2 stop app
       working-directory: Server
