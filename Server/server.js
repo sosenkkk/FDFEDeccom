@@ -54,6 +54,7 @@ app.use(
       "https://next-carbon-git-main-sosenkkk.vercel.app",
       "https://next-carbon.vercel.app",
       "https://next-carbon-al7l5k1lk-sosenkkk.vercel.app",
+      "https://fdfe-deccom.vercel.app/"
     ],
     methods: ["POST", "GET", "HEAD", "PUT", "DELETE"],
     credentials: true,
