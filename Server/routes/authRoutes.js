@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * '/rest/signup':
+ * '/signup':
  *   post:
  *     summary: User Signup
  *     tags: ['Authentication']
@@ -56,13 +56,74 @@ const router = express.Router();
 
 router.post("/signup", authController.signup);
 
-// router.post("/login", authController.login);
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login user
+ *     description: Authenticate and login user with email and password.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: The email address of the user.
+ *               password:
+ *                 type: string
+ *                 description: The password of the user.
+ *     responses:
+ *       '201':
+ *         description: User logged in successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User logged In
+ *                 token:
+ *                   type: string
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                 userId:
+ *                   type: string
+ *                   example: "606b065745ecdf0015b6b498"
+ *       '403':
+ *         description: No such user found or incorrect password.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: No such user found.
+ *       '433':
+ *         description: User entered incorrect password.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User entered Incorrect password
+ */
+
+
+router.post("/login", authController.login);
 
 
 
 /**
  * @swagger
- * '/rest/logout':
+ * '/logout':
  *   get:
  *     summary: User Logout
  *     tags: ['Authentication']
@@ -98,7 +159,7 @@ router.get("/logout", authController.getLogout);
 
 /**
  * @swagger
- * '/rest/change-password':
+ * '/change-password':
  *   post:
  *     summary: Change User Password
  *     tags: ['Authentication']
@@ -160,7 +221,7 @@ router.post("/change-password", authController.changePassword);
 
 /**
  * @swagger
- * '/rest/reset-password':
+ * '/reset-password':
  *   post:
  *     summary: Reset User Password
  *     tags: ['Authentication']
@@ -281,5 +342,6 @@ router.post("/reset-password", authController.postResetPassword);
  */
 
 router.post("/reset-password/:id/:token", authController.getResetPassword);
+
 
 module.exports = router;
