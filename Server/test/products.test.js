@@ -1,6 +1,7 @@
 const request = require('supertest')
 const { app } = require('../server')
 const Product = require("../model/Product");
+const {redisClient} = require("../redisProvider");
 
 jest.mock("../model/Product")
 
@@ -41,7 +42,13 @@ describe('Testing Get Products API', function(done) {
                 expect(res.body.data).toEqual(mocktotalProducts);
                 done();
             });
-    }, 60000)
+    })
+});
+
+afterAll(done => {
+    // Closing the DB connection allows Jest to exit successfully.
+    redisClient.quit();
+    done();
 });
 
 
