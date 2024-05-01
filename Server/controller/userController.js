@@ -109,24 +109,52 @@ exports.getProducts = async (req, res, next) => {
     sort = req.query.sort;
   }
   const limit = 8;
+  console.log(query);
   getOrSetCache(`products?currentPage=${currentPage}&sort=${sort}&filter=${req.query.filter}&limit=${limit}`, 3600, async () => {
     try {
-      const totalProducts = await Product.find(query).countDocuments();
+      const totalProducts = await Product.aggregate([
+        {
+          $match: query
+        },
+        {
+          $group: {_id: null, count: {$sum: 1}}
+        }
+      ]);
+      console.log(totalProducts);
+
+      // const totalProducts = await Product.find(query).countDocuments();
+
+      console.log(totalProducts);
+
       let products;
       if (sort) {
+        // products = await Product.aggregate([{
+        //   $match: query
+        // }])
+        //   .sort({ productPrice: sort })
+        //   .skip((currentPage - 1) * limit)
+        //   .limit(limit);
+
         products = await Product.find(query)
-          .sort({ productPrice: sort })
-          .skip((currentPage - 1) * limit)
-          .limit(limit);
+        .sort({ productPrice: sort })
+        .skip((currentPage - 1) * limit)
+        .limit(limit)
       } else {
+        // products = await Product.aggregate([{
+        //   $match: query
+        // }])
+        //   .skip((currentPage - 1) * limit)
+        //   .limit(limit);
+
         products = await Product.find(query)
-          .skip((currentPage - 1) * limit)
-          .limit(limit);
+        .skip((currentPage - 1) * limit)
+        .limit(limit)
       }
 
-      return { products, totalProducts };
+      return { products, totalProducts: totalProducts.length > 0 ? totalProducts[0].count: 0 };
+      // return {products, totalProducts};
     } catch (err) {
-      throw new Error("failed fetching");
+      throw err;
     }
   })
     .then((data) => {
