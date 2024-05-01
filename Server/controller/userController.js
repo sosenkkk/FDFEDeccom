@@ -4,7 +4,7 @@ const Product = require("../model/Product");
 const Order = require("../model/Order");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
-// const { getOrSetCache, redisClient } = require("../redisProvider");
+const { getOrSetCache, redisClient } = require("../redisProvider");
 
 cloudinary.config({
   cloud_name: `drlqa8duh`,
