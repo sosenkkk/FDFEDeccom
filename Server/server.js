@@ -22,6 +22,20 @@ const app = express();
 
 const PORT = process.env.PORT || 8080;
 
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://next-carbon-git-main-sosenkkk.vercel.app",
+      "https://next-carbon.vercel.app",
+      "https://next-carbon-al7l5k1lk-sosenkkk.vercel.app",
+      "https://fdfe-deccom.vercel.app"
+    ],
+    methods: ["POST", "GET", "HEAD", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 const options = {
   definition: {
       openapi: '3.0.0',
@@ -47,19 +61,6 @@ const swaggerspec = swaggerJSDoc(options);
 //middleware for swagger-docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerspec));
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://next-carbon-git-main-sosenkkk.vercel.app",
-      "https://next-carbon.vercel.app",
-      "https://next-carbon-al7l5k1lk-sosenkkk.vercel.app",
-      "https://fdfe-deccom.vercel.app/"
-    ],
-    methods: ["POST", "GET", "HEAD", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
 
 
 
