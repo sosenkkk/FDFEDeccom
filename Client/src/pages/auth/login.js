@@ -11,18 +11,7 @@ import { Spinner } from "@nextui-org/react";
 const Login = () => {
   const isAuth = useSelector((state)=>state.auth.isAuthenticated)
   const [buttondisabled, setbuttondisabled] = useState(false)
-  const [csrfToken, setcsrfToken] = useState(null);
-  const getToken = async()=>{
-    const res = await fetch("http://localhost:8080/csrf/get-csrf-token", {
-        credentials: 'include'
-    })
-    const respone = await res.json();
-    setcsrfToken(respone.csrfToken);
-  }
-  console.log(csrfToken)
-  useEffect(()=>{
-    getToken();
-  }, [])
+
   useEffect(() => {
     if(isAuth){
       router.push("/")
@@ -88,7 +77,7 @@ const Login = () => {
       validatePasswordHandler(enteredData.password);
     if (validation) {
       setbuttondisabled(true)
-      const response = await fetch(BASE_URL + "csrf/auth/login", {
+      const response = await fetch(BASE_URL + "/login", {
         method: "POST",
         credentials:"include",
         headers: {
@@ -96,8 +85,7 @@ const Login = () => {
         },
         body: JSON.stringify({
           email: enteredData.email,
-          password: enteredData.password,
-          _csrf: csrfToken
+          password: enteredData.password
         }),
       });
 
