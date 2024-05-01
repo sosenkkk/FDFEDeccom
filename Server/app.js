@@ -37,10 +37,11 @@ const options = {
       ],
       tags: [
         { name: 'Authentication', description: 'Endpoints for user authentication' },
-        { name: 'User', description: 'Endpoints for user actions' }
+        { name: 'User', description: 'Endpoints for user actions' },
+        { name: 'Seller', description: 'Endpoints for seller actions' }
       ]
   },
-  apis: ['./app.js', './routes/*.js', "./doc_Schemas.js"]
+  apis: ['./middleware/*.js', './app.js', './routes/*.js', "./doc_Schemas.js"]
 }
 
 const swaggerspec = swaggerJSDoc(options);

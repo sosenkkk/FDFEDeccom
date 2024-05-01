@@ -4,7 +4,7 @@ const Product = require("../model/Product");
 const Order = require("../model/Order");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
-const { getOrSetCache, redisClient } = require("../redisProvider");
+// const { getOrSetCache, redisClient } = require("../redisProvider");
 
 cloudinary.config({
   cloud_name: `drlqa8duh`,
@@ -95,50 +95,50 @@ exports.editInfo = async (req, res, next) => {
 };
 
 exports.getProducts = async (req, res, next) => {
-  let currentPage = req.query.page || 1;
-  const query = {};
-  let sort;
-  if (
-    req.query.filter &&
-    req.query.filter != " " &&
-    req.query.filter != "all"
-  ) {
-    query.productModel = req.query.filter;
-  }
-  if (req.query.sort && req.query.sort != "") {
-    sort = req.query.sort;
-  }
-  const limit = 8;
-  getOrSetCache(`products?currentPage=${currentPage}&sort=${sort}&filter=${filter}&limit=${limit}`, 3600, async () => {
-    try {
-      const totalProducts = await Product.find(query).countDocuments();
-      let products;
-      if (sort) {
-        products = await Product.find(query)
-          .sort({ productPrice: sort })
-          .skip((currentPage - 1) * limit)
-          .limit(limit);
-      } else {
-        products = await Product.find(query)
-          .skip((currentPage - 1) * limit)
-          .limit(limit);
-      }
+  // let currentPage = req.query.page || 1;
+  // const query = {};
+  // let sort;
+  // if (
+  //   req.query.filter &&
+  //   req.query.filter != " " &&
+  //   req.query.filter != "all"
+  // ) {
+  //   query.productModel = req.query.filter;
+  // }
+  // if (req.query.sort && req.query.sort != "") {
+  //   sort = req.query.sort;
+  // }
+  // const limit = 8;
+  // getOrSetCache(`products?currentPage=${currentPage}&sort=${sort}&filter=${filter}&limit=${limit}`, 3600, async () => {
+  //   try {
+  //     const totalProducts = await Product.find(query).countDocuments();
+  //     let products;
+  //     if (sort) {
+  //       products = await Product.find(query)
+  //         .sort({ productPrice: sort })
+  //         .skip((currentPage - 1) * limit)
+  //         .limit(limit);
+  //     } else {
+  //       products = await Product.find(query)
+  //         .skip((currentPage - 1) * limit)
+  //         .limit(limit);
+  //     }
 
-      return { products, totalProducts };
-    } catch (err) {
-      throw new Error("failed fetching");
-    }
-  })
-    .then((data) => {
-      res.status(201).json({
-        message: "Products fetched Successfully",
-        products: data.products,
-        totalProducts: data.totalProducts,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+  //     return { products, totalProducts };
+  //   } catch (err) {
+  //     throw new Error("failed fetching");
+  //   }
+  // })
+  //   .then((data) => {
+  //     res.status(201).json({
+  //       message: "Products fetched Successfully",
+  //       products: data.products,
+  //       totalProducts: data.totalProducts,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   })
 }
 
 
@@ -275,35 +275,35 @@ exports.postCheckOut = async (req, res, next) => {
 
 exports.getOrders = async (req, res, next) => {
 
-  const userId = req.userId;
-  getOrSetCache(`orders?userId=${userId}`, 30, async () => {
-    try {
-      const orders = await Order.find({ "user.userId": userId });
-      if (orders.length > 0) {
-        const updatedOrders = orders.map((order) => {
-          return {
-            user: order.user,
-            total: order.total,
-            orderPlaced: order.createdAt.toLocaleDateString(),
-            id: order._id.toString(),
-          };
-        });
+  // const userId = req.userId;
+  // getOrSetCache(`orders?userId=${userId}`, 30, async () => {
+  //   try {
+  //     const orders = await Order.find({ "user.userId": userId });
+  //     if (orders.length > 0) {
+  //       const updatedOrders = orders.map((order) => {
+  //         return {
+  //           user: order.user,
+  //           total: order.total,
+  //           orderPlaced: order.createdAt.toLocaleDateString(),
+  //           id: order._id.toString(),
+  //         };
+  //       });
 
-      }
-      return updatedOrders;
-    } catch (error) {
-      throw new Error("some error occured");
-    }
-  })
-    .then((data) => {
-      res.status(201).json({
-        message: "Fetched Orders Successfully.",
-        orders: data,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+  //     }
+  //     return updatedOrders;
+  //   } catch (error) {
+  //     throw new Error("some error occured");
+  //   }
+  // })
+  //   .then((data) => {
+  //     res.status(201).json({
+  //       message: "Fetched Orders Successfully.",
+  //       orders: data,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   })
 };
 
 exports.getSingleOrder = async (req, res, next) => {
