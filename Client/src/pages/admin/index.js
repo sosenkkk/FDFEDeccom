@@ -63,6 +63,11 @@ export default function Admin(props) {
               link="/admin/view/users"
               description="View All accounts."
             />
+            <AccountCard
+              title="View/Delete Sellers"
+              link="/admin/view/sellers"
+              description="View All Sellers Only."
+            />
           </div>
         </div>
       </div>}

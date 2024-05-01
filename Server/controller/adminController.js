@@ -12,7 +12,7 @@ cloudinary.config({
 });
 
 exports.addProduct = async (req, res, next) => {
-  console.log(req.file)
+  console.log(req.file);
   const uploadedFile = req.files.image;
   const productModel = req.body.productModel;
   const productName = req.body.productName;
@@ -52,7 +52,7 @@ exports.getAddProduct = async (req, res, next) => {
 
 exports.getEditProduct = async (req, res, next) => {
   const productId = req.params.prodId;
-  console.log(productId)
+  console.log(productId);
 
   try {
     const product = await Product.findOne({ _id: productId });
@@ -138,6 +138,17 @@ exports.postDeleteRequest = async (req, res, next) => {
   }
 };
 
+exports.postDeleteOrder = async (req, res, next) => {
+  try {
+    const id = req.params.reqId;
+    const itemDeleted = await Order.deleteOne({ _id: id });
+    res.status(201).json({ message: "Order Deleted Successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(433).json({ message: "Failed Deleting Request" });
+  }
+};
+
 exports.postDeleteUser = async (req, res, next) => {
   try {
     const id = req.params.reqId;
@@ -188,10 +199,43 @@ exports.getUsers = async (req, res, next) => {
   if (req.query.sort && req.query.sort != "") {
     sort = req.query.sort;
   }
+  console.log(sort);
   try {
     const limit = 5;
     let requests, totalRequests;
     totalRequests = await User.find().countDocuments();
+    if (sort) {
+      requests = await User.find()
+        .skip((currentPage - 1) * limit)
+        .limit(limit)
+        .sort({ createdAt: sort });
+    } else {
+      requests = await User.find()
+        .skip((currentPage - 1) * limit)
+        .limit(limit);
+    }
+    res.status(201).json({
+      message: "Successfully fetched Requests!",
+      requests: requests,
+      totalRequests: totalRequests,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: "Requests failed to load!" });
+  }
+};
+
+exports.getSellers = async (req, res, next) => {
+  let currentPage = req.query.page || 1;
+  let sort;
+  if (req.query.sort && req.query.sort != "") {
+    sort = req.query.sort;
+  }
+  console.log(sort);
+  try {
+    const limit = 5;
+    let requests, totalRequests;
+    totalRequests = await User.find({ isSeller: true }).countDocuments();
     if (sort) {
       requests = await User.find()
         .skip((currentPage - 1) * limit)

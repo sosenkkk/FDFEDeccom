@@ -5,62 +5,21 @@ import {  Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Pagination } from "@nextui-org/react";
-import Modal from "../../../../components/Modal";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+
 export default function ViewOrders() {
   const router = useRouter()
   const [admin, setAdmin] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
   const toast = useToast();
   const [sort, setsort] = useState("");
   const [totalPages, setTotalPages] = useState(1);
   const [page, setpage] = useState(1);
   const [orders, setorders] = useState();
-  const [itemToDelete, setItemToDelete] = useState(null);
   const [productsLoaded, setproductsLoaded] = useState(false);
-  const token = useSelector((state)=>state.auth.userToken)
-
-  const openModal = (event) => {
-    setItemToDelete(event.target.id);
-    setModalOpen(true);
-  };
-  console.log(itemToDelete)
-  const closeModal = () => {
-    setItemToDelete(null)
-    setModalOpen(false);
-  };
-
-  const deleteRequestHandler = async (event) => {
-    const id = itemToDelete;
-    const result = await fetch(BASE_URL + "delete-order/" + id, {
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-    });
-    const res = await result.json()
-    if (result.status == 201) {
-      toast({
-        title: res.message,
-        status: "error",
-        isClosable: true,
-      });
-      router.reload()
-    } else if (result.status == 433) {
-      toast({
-        title: res.message,
-        status: "error",
-        isClosable: true,
-      });
-      router.reload()
-
-    }
-  };
 
   const fetchData = async (token) => {
     const result = await fetch(
-      BASE_URL + `view-orders?page=${page}&sort=${sort}`,
+      BASE_URL + `seller/view-orders?page=${page}&sort=${sort}`,
       {
         headers: {
           Authorization: "Bearer " + token,
@@ -131,10 +90,7 @@ export default function ViewOrders() {
                         Total Price
                       </th>
                       <th scope="col" className="px-6 py-3">
-                        <span className="sr-only">View</span>
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        <span className="sr-only">Delete</span>
+                        <span className="sr-only">Change Status</span>
                       </th>
                     </tr>
                   </thead>
@@ -162,46 +118,18 @@ export default function ViewOrders() {
                         </td>
                         <td className="px-6 py-4 text-right">
                           <Link
-                            href={`/admin/view-orders/${product.id}`}
+                            href={`/seller/order-status/${product.id}`}
                             id={product.id}
-                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                            className="font-medium text-green-600 dark:text-green-500 hover:underline"
                           >
-                            View
+                            Change
                           </Link>
                         </td>
-                        <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={openModal}
-                          id={product.id}
-                          className="font-medium text-red-600 dark:text-red-500 hover:underline"
-                        >
-                          Delete
-                        </button>
-                      </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <Modal isOpen={isModalOpen} onClose={closeModal} maxWidth="500px">
-                <div className="px-8 rounded-lg py-4 bg-[#f7f7f7]  dark:bg-[#171717] text-gray-800 dark:text-gray-200">
-                  <h2 className="text-lg text-center sm:text-xl font-semibold mb-4">
-                    Click "Yes" to delete the Product.
-                  </h2>
-                  <div className="flex flex-col sm:flex-row items-center gap-4 sm:justify-around">
-                    <button className="cartBtn" onClick={deleteRequestHandler}>
-                      Yes
-                    </button>
-                    <button
-                      style={{ backgroundColor: "#F24C3D" }}
-                      className="cartBtn"
-                      onClick={closeModal}
-                    >
-                      No
-                    </button>
-                  </div>
-                </div>
-              </Modal>
               <div className="flex justify-center py-4 bg-[#f9f9f9] dark:bg-[#202020] transition">
                 <Pagination
                   showShadow

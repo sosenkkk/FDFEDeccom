@@ -148,7 +148,7 @@ export default function Requests() {
                         {product._id}
                       </th>
                       <td className="px-6 py-4 dark:text-white">
-                        {product.user.email}
+                        {product?.user?.email}
                       </td>
                       <td className="px-6 py-4 dark:text-white">
                         {truncateString(product.message)}

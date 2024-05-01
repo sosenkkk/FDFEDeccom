@@ -11,7 +11,7 @@ const productSchema = new Schema({
     type: String,
     default:
       "https://res.cloudinary.com/drlqa8duh/image/upload/v1695057776/ce8ft1g5enngqb1ninkb.jpg",
-  },
+  }
 });
 
 module.exports = mongoose.model("Product", productSchema);
