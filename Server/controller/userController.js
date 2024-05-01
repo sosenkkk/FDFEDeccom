@@ -4,6 +4,7 @@ const Product = require("../model/Product");
 const Order = require("../model/Order");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
+const { getOrSetCache, redisClient } = require("../redisProvider");
 
 cloudinary.config({
   cloud_name: `drlqa8duh`,
@@ -107,36 +108,39 @@ exports.getProducts = async (req, res, next) => {
   if (req.query.sort && req.query.sort != "") {
     sort = req.query.sort;
   }
-
   const limit = 8;
-  try {
-    const totalProducts = await Product.find(query).countDocuments();
-    let products;
-    if (sort) {
-      products = await Product.find(query)
-        .sort({ productPrice: sort })
-        .skip((currentPage - 1) * limit)
-        .limit(limit);
-    } else {
-      products = await Product.find(query)
-        .skip((currentPage - 1) * limit)
-        .limit(limit);
-    }
+  getOrSetCache(`products?currentPage=${currentPage}&sort=${sort}&filter=${req.query.filter}&limit=${limit}`, 3600, async () => {
+    try {
+      const totalProducts = await Product.find(query).countDocuments();
+      let products;
+      if (sort) {
+        products = await Product.find(query)
+          .sort({ productPrice: sort })
+          .skip((currentPage - 1) * limit)
+          .limit(limit);
+      } else {
+        products = await Product.find(query)
+          .skip((currentPage - 1) * limit)
+          .limit(limit);
+      }
 
-    if (products.length != 0) {
-      res.status(201).json({
-        message: "Products fetched Successfully",
-        products: products,
-        totalProducts: totalProducts,
-      });
-    } else {
+      return { products, totalProducts };
+    } catch (err) {
       throw new Error("failed fetching");
     }
-  } catch (err) {
-    console.log(err);
-    res.status(433).json({ message: "Products fecthing failed" });
-  }
-};
+  })
+    .then((data) => {
+      res.status(201).json({
+        message: "Products fetched Successfully",
+        products: data.products,
+        totalProducts: data.totalProducts,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+}
+
 
 exports.getSingleProduct = async (req, res, next) => {
   const productId = req.params.productId;
@@ -201,7 +205,7 @@ exports.contactUs = async (req, res, next) => {
 };
 
 exports.postCart = async (req, res, next) => {
-  const quantity = req.body.quantity|| 1;
+  const quantity = req.body.quantity || 1;
   try {
     const prodId = req.body.productId;
     const userId = req.userId;
@@ -270,10 +274,11 @@ exports.postCheckOut = async (req, res, next) => {
 };
 
 exports.getOrders = async (req, res, next) => {
-  try {
-    const userId = req.userId;
-    const orders = await Order.find({ "user.userId": userId });
-    if (orders.length > 0) {
+
+  const userId = req.userId;
+  getOrSetCache(`orders?userId=${userId}`, 30, async () => {
+    try {
+      const orders = await Order.find({ "user.userId": userId });
       const updatedOrders = orders.map((order) => {
         return {
           user: order.user,
@@ -282,17 +287,21 @@ exports.getOrders = async (req, res, next) => {
           id: order._id.toString(),
         };
       });
+      return updatedOrders;
+    } catch (error) {
+      console.log(error)
+      throw new Error("some error occured");
+    }
+  })
+    .then((data) => {
       res.status(201).json({
         message: "Fetched Orders Successfully.",
-        orders: updatedOrders,
+        orders: data,
       });
-    } else {
-      res.status(404).json({ message: "No orders found." });
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(433).json({ message: "Some error occured" });
-  }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
 };
 
 exports.getSingleOrder = async (req, res, next) => {

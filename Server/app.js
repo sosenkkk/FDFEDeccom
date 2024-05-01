@@ -10,15 +10,43 @@ const userRoutes = require("./routes/userRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const sellerRoutes = require("./routes/sellerRoutes");
 const csrfRoutes = require("./middleware/csrfMiddleWare");
+const swaggerJSDoc=require("swagger-jsdoc");
+const swaggerUi=require("swagger-ui-express");
 const morgan = require("morgan");
 const fs = require("fs");
 const path = require("path");
+
 const { v4: uuidv4 } = require("uuid");
 
 const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster1.wxdleee.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`;
 const app = express();
 
 const PORT = process.env.PORT || 8080;
+
+const options = {
+  definition: {
+      openapi: '3.0.0',
+      info: {
+          title: "Carbon",
+          version: '1.0.0'
+      },
+      servers: [
+          {
+              url: `http://localhost:${PORT}/`
+          }
+      ],
+      tags: [
+        { name: 'Authentication', description: 'Endpoints for user authentication' },
+        { name: 'User', description: 'Endpoints for user actions' }
+      ]
+  },
+  apis: ['./app.js', './routes/*.js', "./doc_Schemas.js"]
+}
+
+const swaggerspec = swaggerJSDoc(options);
+
+//middleware for swagger-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerspec));
 
 app.use(
   cors({
@@ -32,6 +60,8 @@ app.use(
     credentials: true,
   })
 );
+
+
 
 const logsDir = path.join(__dirname, "Logs");
 if (!fs.existsSync(logsDir)) {

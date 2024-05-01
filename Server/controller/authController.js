@@ -189,6 +189,76 @@ exports.getResetPassword = async (req, res, next) => {
   }
 };
 
+
+/**
+ * @swagger
+ * '/rest/reset-password/{id}/{token}':
+ *   post:
+ *     summary: Reset User Password with Token
+ *     description: Reset the password for a user using the provided reset token.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: User ID extracted from the reset link.
+ *       - name: token
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: Reset token extracted from the reset link.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address of the user.
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: New password to be set for the user.
+ *     responses:
+ *       201:
+ *         description: User password changed successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User password changed!
+ *       433:
+ *         description: Invalid Link or Incorrect Email.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid Link or Incorrect Email.
+ *       404:
+ *         description: Some error occurred or Invalid Link.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Some Error Occurred. Invalid Link.
+ */
+
+
+
 exports.getLogout = async (req, res, next) => {
   try {
     await res.clearCookie("jwt");
