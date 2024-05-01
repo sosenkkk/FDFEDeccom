@@ -26,7 +26,20 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies and run tests
+      env:
+        NODE_ENV: ${{ secrets.NODE_ENV }}
+        MONGO_USER: ${{ secrets.MONGO_USER }}
+        MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+        MONGO_DEFAULT_DATABASE: ${{ secrets.MONGO_DEFAULT_DATABASE }}
+        cloud_name: ${{ secrets.cloud_name }}
+        api_key: ${{ secrets.api_key }}
+        api_secret: ${{ secrets.api_secret }}
+        json_secret: ${{ secrets.json_secret }}
       run: |
+        npm install pm2 -g
         npm install
+        pm2 start index.js
+        sleep 20
         npm test
+        pm2 stop index
       working-directory: Server

@@ -77,7 +77,7 @@ const Login = () => {
       validatePasswordHandler(enteredData.password);
     if (validation) {
       setbuttondisabled(true)
-      const response = await fetch(BASE_URL + "/login", {
+      const response = await fetch(BASE_URL + "login", {
         method: "POST",
         credentials:"include",
         headers: {
