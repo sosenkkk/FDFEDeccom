@@ -1,7 +1,6 @@
 const { createClient } = require('redis');
 
 
-
 const redisClient = createClient({
     password: 'd1C1siGXkUn2TXdjrmhTl0VyrY5AUqRm',
     socket: {
