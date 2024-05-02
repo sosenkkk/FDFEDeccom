@@ -12,7 +12,8 @@ export default function sellerProducts() {
   const [productsLoaded, setproductsLoaded] = useState(false);
   const [seller, setseller]= useState(false)
   const [products, setproducts] = useState([]);
-    const [page, setpage] = useState(1);
+  // const [userId, setUserId] = useState();
+  const [page, setpage] = useState(1);
     const [totalPage, settotalPage] = useState(1);
     const [filter, setfilter] = useState("");
     const [sort, setsort] = useState("");
@@ -30,13 +31,14 @@ export default function sellerProducts() {
       setItemToDelete(null)
       setModalOpen(false);
     };
-
-  const fetchProducts = async (token) => {
+  const fetchProducts = async (token, userId) => {
     const result = await fetch(
-      BASE_URL + `seller/view-products?page=${page}&filter=${filter}&sort=${sort}`,{
+      BASE_URL + `seller/view-my-products/${userId}?page=${page}&filter=${filter}&sort=${sort}`,{
+        method:"POST",
         headers:{
             Authorization:"Bearer "+ token,
-        }
+        },
+        body:JSON.stringify({userId})
       }
     );
     const res = await result.json();
@@ -61,7 +63,8 @@ export default function sellerProducts() {
   useEffect(() => {
     setproductsLoaded(false)
     const token = localStorage.getItem("token")
-    fetchProducts(token);
+    const userId = localStorage.getItem("userId")
+    fetchProducts(token, userId);
   }, [page,  sort, filter]);
   const deleteProductHandler = async () => {
     const id = itemToDelete;

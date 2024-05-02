@@ -10,6 +10,7 @@ export default function AddProduct(props) {
   const [seller, setseller]= useState(false)
   const [buttondisabled, setbuttondisabled] = useState(false)
   const [productImage, setProductImage] = useState(null);
+  const [userId, setUserId] = useState();
   const productModelRef = useRef();
   const productNameRef = useRef();
   const modelNumberRef = useRef();
@@ -37,6 +38,8 @@ export default function AddProduct(props) {
   useEffect(()=>{
     const token = localStorage.getItem("token")
     fetchData(token)
+    const userId = localStorage.getItem("userId")
+    setUserId(userId)
   },[])
   const imageSelect = (file) => {
     if (file) {
@@ -72,6 +75,7 @@ export default function AddProduct(props) {
       formData.append("productName", productName);
       formData.append("productModelNumber", productModelNumber);
       formData.append("productPrice", productPrice);
+      formData.append("id", userId);
       formData.append("image", productImage);
       const result = await fetch(BASE_URL + "seller/add-product", {
         method: "POST",

@@ -158,8 +158,9 @@ router.get('/view-orders', isAuth, isSeller, adminController.getOrders )
  */
 
 
-router.get('/view-products', isAuth, isSeller, adminController.getAllProducts )
+router.post('/view-my-products/:userId', isAuth, isSeller, adminController.getSellerProducts )
 
+router.post('/change-order-status/:orderId', isAuth, isSeller, adminController.changeOrderStatus )
 
 /**
  * @swagger
