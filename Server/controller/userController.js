@@ -145,6 +145,7 @@ exports.getProducts = async (req, res, next) => {
         //   .skip((currentPage - 1) * limit)
         //   .limit(limit);
 
+        
         products = await Product.find(query)
         .sort({ productPrice: sort })
         .skip((currentPage - 1) * limit)
