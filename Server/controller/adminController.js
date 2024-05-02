@@ -15,6 +15,7 @@ exports.addProduct = async (req, res, next) => {
   console.log(req.file);
   const uploadedFile = req.files.image;
   const productModel = req.body.productModel;
+  const sellerId = req.body.id;
   const productName = req.body.productName;
   const productModelNumber = req.body.productModelNumber;
   const productPrice = req.body.productPrice;
@@ -33,6 +34,7 @@ exports.addProduct = async (req, res, next) => {
           productModelNumber: productModelNumber,
           productPrice: productPrice,
           productImage: imageUrl,
+          sellerId: sellerId,
         });
         const newProduct = await product.save();
         res.status(201).json({ message: "Product Uploaded" });
@@ -304,6 +306,54 @@ exports.getOrders = async (req, res, next) => {
 exports.getAllProducts = async (req, res, next) => {
   let currentPage = req.query.page || 1;
   const query = {};
+  let sort;
+  if (
+    req.query.filter &&
+    req.query.filter != " " &&
+    req.query.filter != "all"
+  ) {
+    query.productModel = req.query.filter;
+  }
+  if (req.query.sort && req.query.sort != "") {
+    sort = req.query.sort;
+  }
+
+  const limit = 8;
+  try {
+    const totalProducts = await Product.find(query).countDocuments();
+    let products;
+    if (sort) {
+      products = await Product.find(query)
+        .sort({ productPrice: sort })
+        .skip((currentPage - 1) * limit)
+        .limit(limit);
+    } else {
+      products = await Product.find(query)
+        .skip((currentPage - 1) * limit)
+        .limit(limit);
+    }
+
+    if (products.length != 0) {
+      res.status(201).json({
+        message: "Products fetched Successfully",
+        products: products,
+        totalProducts: totalProducts,
+      });
+    } else {
+      throw new Error("failed fetching");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(433).json({ message: "Products fecthing failed" });
+  }
+};
+
+
+exports.getSellerProducts = async (req, res, next) => {
+  console.log(req.params.userId);
+  let currentPage = req.query.page || 1;
+  const query = {};
+  query.sellerId = req.params.userId;
   let sort;
   if (
     req.query.filter &&

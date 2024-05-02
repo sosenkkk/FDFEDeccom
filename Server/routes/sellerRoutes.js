@@ -158,7 +158,7 @@ router.get('/view-orders', isAuth, isSeller, adminController.getOrders )
  */
 
 
-router.get('/view-products', isAuth, isSeller, adminController.getAllProducts )
+router.post('/view-my-products/:userId', isAuth, isSeller, adminController.getSellerProducts )
 
 
 /**

@@ -7,6 +7,10 @@ const productSchema = new Schema({
   productModel: { type: String, required: true },
   productModelNumber: { type: String, required: true },
   productPrice: { type: Number, required: true },
+  sellerId : {
+    type : mongoose.Schema.Types.ObjectId,
+    ref: 'Seller'
+  },
   productImage: {
     type: String,
     default:
