@@ -138,17 +138,17 @@ exports.getProducts = async (req, res, next) => {
 
       let products;
       if (sort) {
-        products = await Product.aggregate([{
-          $match: query
-        }])
-          .sort({ productPrice: sort })
-          .skip((currentPage - 1) * limit)
-          .limit(limit);
+        // products = await Product.aggregate([{
+        //   $match: query
+        // }])
+        //   .sort({ productPrice: sort })
+        //   .skip((currentPage - 1) * limit)
+        //   .limit(limit);
 
         products = await Product.find(query)
-        // .sort({ productPrice: sort })
-        // .skip((currentPage - 1) * limit)
-        // .limit(limit)
+        .sort({ productPrice: sort })
+        .skip((currentPage - 1) * limit)
+        .limit(limit)
       } else {
         // products = await Product.aggregate([{
         //   $match: query
