@@ -33,7 +33,12 @@ router.get("/delete-order/:reqId", isAuth, isAdmin, adminController.postDeleteOr
 
 router.get("/delete-user/:reqId", isAuth, isAdmin, adminController.postDeleteUser);
 
+router.get("/admin/change-user/:reqId", isAuth, isAdmin, adminController.postChangeUserSeller);
+
 router.post("/add-product", isAuth, isAdmin,  adminController.addProduct);
+
+router.post("/admin/signup", adminController.adminSignup);
+
 
 router.get("/delete-request/:reqId",isAuth, adminController.deleteRequest)
 

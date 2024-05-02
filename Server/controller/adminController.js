@@ -4,6 +4,7 @@ const Contacts = require("../model/Contacts");
 const Product = require("../model/Product");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
+const bcrypt = require("bcryptjs");
 
 cloudinary.config({
   cloud_name: `${process.env.cloud_name}`,
@@ -159,6 +160,48 @@ exports.postDeleteUser = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(433).json({ message: "Failed Deleting User" });
+  }
+};
+
+exports.postChangeUserSeller = async (req, res, next) => {
+  try {
+    const id = req.params.reqId;
+    const user = await User.findOne({ _id: id });
+    user.isSeller = true;
+    await user.save();
+    res.status(201).json({ message: "User Changed Successfully" });
+
+  } catch (err) {
+    console.log(err);
+    res.status(433).json({ message: "Failed Deleting User" });
+  }
+};
+
+
+exports.adminSignup = async (req, res, next) => {
+  console.log(req.body)
+  const { email, password, isSeller } = req.body;
+  try {
+    const enteredUser = await User.findOne({ email: email });
+    if (enteredUser) {
+      res
+        .status(433)
+        .json({ message: "User already registered.", userId: enteredUser._id });
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 12);
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        isSeller: isSeller,
+      });
+      const result = await user.save();
+      res
+        .status(201)
+        .json({ message: "User account created!", userId: result._id });
+    }
+  } catch (err) {
+    console.log(err);
+    next();
   }
 };
 
@@ -389,6 +432,7 @@ exports.getSellerProducts = async (req, res, next) => {
       });
     } else {
       throw new Error("failed fetching");
+      
     }
   } catch (err) {
     console.log(err);
@@ -396,6 +440,20 @@ exports.getSellerProducts = async (req, res, next) => {
   }
 };
 
+exports.changeOrderStatus = async (req, res, next) => {
+  const orderId = req.params.orderId;
+  const newStatus = req.body.status;
+  try{
+    const order = await Order.findById(orderId);
+    order.orderStatus = newStatus;
+    await order.save();
+    res.status(201).json({ message: "Order status changed successfully" });
+  }catch(err) {
+    console.log(err);
+    res.status(433).json({ message: "Order status failed" });
+  }
+
+}
 exports.getSingleOrder = async (req, res, next) => {
   const orderId = req.params.orderId;
   console.log(req.params);

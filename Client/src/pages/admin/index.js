@@ -31,7 +31,7 @@ export default function Admin(props) {
   },[])
   return (
     <>{admin && 
-      <div className="w-full min-h-[500px] bg-[#fff]  dark:bg-[#171717] dark:text-gray-200 transition-colors pt-32 p-8 md:p-28">
+      <div className="w-full min-h-[500px] bg-[#fff]  dark:bg-[#171717] dark:text-gray-200 transition-colors pt-32 p-8 md:p-28 md:pb-12">
         <div className=" text-center sm:text-left">
           <h1 className="text-3xl ">Hello {userInfo.firstName}! Welcome to Admin Controls.</h1> 
           
@@ -66,7 +66,17 @@ export default function Admin(props) {
             <AccountCard
               title="View/Delete Sellers"
               link="/admin/view/sellers"
-              description="View All Sellers Only."
+              description=" Sellers Only."
+            />
+            <AccountCard
+              title="Make Sellers"
+              link="/admin/view/make-sellers"
+              description="Make Sellers."
+            />
+            <AccountCard
+              title="Create account"
+              link="/admin/view/create-user"
+              description="Create an account."
             />
           </div>
         </div>

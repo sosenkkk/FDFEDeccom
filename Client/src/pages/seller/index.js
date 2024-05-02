@@ -50,9 +50,9 @@ export default function seller(props) {
               description="View Customer orders."
             />
             <AccountCard
-              title="All Products"
+              title="My Products"
               link="/seller/view-products"
-              description="Edit/remove products."
+              description="View my products."
             />
            <AccountCard
               title="Order Status"
