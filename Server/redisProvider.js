@@ -1,5 +1,7 @@
 const { createClient } = require('redis');
 
+
+
 const redisClient = createClient({
     password: 'd1C1siGXkUn2TXdjrmhTl0VyrY5AUqRm',
     socket: {
@@ -7,6 +9,7 @@ const redisClient = createClient({
         port: 17256
     }
 });
+
 
 (async () => {
     await redisClient.connect();

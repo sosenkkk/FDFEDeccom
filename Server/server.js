@@ -120,9 +120,6 @@ app.get("/createProductModelIndex", async (req, res) => {
   }
 });
 
-app.get("/dropProductModelIndex", (req, res) => {
-
-})
 
 app.use((error, req, res, next) => {
   console.log(error);
